@@ -7,7 +7,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Key Features](#-key-features)
 - [Tech Stack](#-tech-stack)
