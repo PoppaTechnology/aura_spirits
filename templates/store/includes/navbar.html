@@ -1,0 +1,66 @@
+<!-- Navigation -->
+<nav id="navbar">
+    <div class="container-xl px-3 px-sm-4">
+        <div class="d-flex justify-content-between align-items-center">
+
+            <!-- Logo -->
+            <a href="{% url 'store:home' %}" class="navbar-brand-text">
+                <i class="ph-fill ph-drop"></i>
+                Aura<span class="brand-sub">Spirits</span>
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="d-none d-md-flex align-items-center gap-4">
+                <a href="{% url 'store:home' %}" class="nav-link-custom">Home</a>
+                <a href="{% url 'store:catalog' %}" class="nav-link-custom">Catalog</a>
+                <a href="{% url 'store:heritage' %}" class="nav-link-custom">Heritage</a>
+                <a href="{% url 'store:contact' %}" class="nav-link-custom">Contact</a>
+
+                <!-- Wishlist Link -->
+                <a href="{% url 'store:wishlist' %}" class="nav-link-custom d-flex align-items-center gap-1"
+                    title="Saved Spirits">
+                    <i class="ph ph-heart" style="font-size:1.1rem;"></i>
+                    <span class="badge rounded-pill bg-dark border border-secondary wishlist-count px-1"
+                        style="font-size:0.65rem;">{{ wishlist_count }}</span>
+                </a>
+
+                <!-- Cart Button -->
+                <button class="cart-btn" onclick="openCartDrawer()" title="View Cart">
+                    <i class="ph ph-shopping-bag" style="font-size:1.05rem;"></i>
+                    Cart
+                    <span class="cart-count" id="cart-count">{{ cart_count }}</span>
+                </button>
+            </div>
+
+            <!-- Mobile Toggle -->
+            <div class="d-md-none d-flex align-items-center gap-3">
+                <button class="cart-btn py-1 px-2" onclick="openCartDrawer()">
+                    <i class="ph ph-shopping-bag"></i>
+                    <span class="cart-count">{{ cart_count }}</span>
+                </button>
+                <button id="mobile-menu-btn" style="background:none;border:none;color:#d1d5db;padding:0;">
+                    <i class="ph ph-list" style="font-size:1.875rem;"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="d-none">
+        <div class="px-3 pt-2 pb-4 d-flex flex-column gap-2">
+            <a href="{% url 'store:home' %}" class="mobile-nav-link">Home</a>
+            <a href="{% url 'store:catalog' %}" class="mobile-nav-link">Catalog</a>
+            <a href="{% url 'store:heritage' %}" class="mobile-nav-link">Heritage</a>
+            <a href="{% url 'store:contact' %}" class="mobile-nav-link">Contact</a>
+            <a href="{% url 'store:wishlist' %}"
+                class="mobile-nav-link d-flex align-items-center justify-content-center gap-2">
+                <i class="ph ph-heart"></i> Saved Spirits ({{ wishlist_count }})
+            </a>
+            <button onclick="openCartDrawer()"
+                class="mobile-nav-link border-0 w-100 d-flex align-items-center justify-content-center gap-2"
+                style="color:var(--amber-500);background:none;">
+                <i class="ph ph-shopping-bag"></i> View Cart ({{ cart_count }})
+            </button>
+        </div>
+    </div>
+</nav>

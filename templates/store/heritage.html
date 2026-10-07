@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Heritage - Aura Spirits Since 1924{% endblock %}
+
+{% block content %}
+<div id="page-wrap" class="container-xl px-3 px-sm-4">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-custom mb-3">
+        <a href="{% url 'store:home' %}">Home</a>
+        <i class="ph ph-caret-right"></i>
+        <span class="current">Our Heritage</span>
+    </nav>
+
+    <!-- Heritage Hero Banner -->
+    <div class="text-center py-5 mb-5 position-relative">
+        <span class="hero-eyebrow mb-2">A Century of Distillation</span>
+        <h1 class="font-serif text-white fs-1 mb-3" style="font-size:clamp(2.25rem,5vw,3.5rem);">The Aura Legacy</h1>
+        <p class="text-secondary fw-light mx-auto" style="max-width:42rem;line-height:1.8;">
+            Since 1924, Aura Spirits has remained dedicated to the uncompromising pursuit of distillation excellence. Guided by patience, ancient alchemy, and hand-selected oak casks.
+        </p>
+    </div>
+
+    <!-- Heritage Story Grid -->
+    <div class="row g-5 align-items-center mb-5 pb-5">
+        <div class="col-12 col-lg-6">
+            <span class="text-uppercase fw-semibold small text-warning" style="letter-spacing:0.15em;">The Philosophy</span>
+            <h2 class="font-serif text-white fs-2 mb-4">Patience Is Our Greatest Ingredient</h2>
+            <p class="text-body fw-light mb-3" style="line-height:1.8;">
+                In an era of rushed mass production, Aura Spirits stands apart. We believe that true character cannot be hurried. Our master distillers allow spirits to rest in silence for decades, breathing through porous French and American oak casks.
+            </p>
+            <p class="text-body fw-light mb-4" style="line-height:1.8;">
+                Every drop represents the interplay between pure Scottish highland spring water, volcanic soil botanicals, and hand-charred oak barrels seasoned under coastal sea breezes.
+            </p>
+            <div class="row g-3">
+                <div class="col-4 text-center p-3 rounded-3" style="background:var(--charcoal-800);border:1px solid var(--border);">
+                    <div class="fs-3 fw-bold text-white font-serif">1924</div>
+                    <div class="text-secondary small fw-medium">Founded</div>
+                </div>
+                <div class="col-4 text-center p-3 rounded-3" style="background:var(--charcoal-800);border:1px solid var(--border);">
+                    <div class="fs-3 fw-bold text-white font-serif">50+</div>
+                    <div class="text-secondary small fw-medium">Global Trophies</div>
+                </div>
+                <div class="col-4 text-center p-3 rounded-3" style="background:var(--charcoal-800);border:1px solid var(--border);">
+                    <div class="fs-3 fw-bold text-white font-serif">100%</div>
+                    <div class="text-secondary small fw-medium">Single Estate Casks</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="position-relative">
+                <img src="https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=1000&q=80" 
+                     alt="Oak Casks" class="rounded-4 w-100 shadow-lg" 
+                     style="height:420px;object-fit:cover;border:1px solid rgba(255,255,255,0.1);">
+            </div>
+        </div>
+    </div>
+
+    <!-- The 4 Pillars of Aura Craft -->
+    <div class="mb-5 pb-5">
+        <div class="text-center mb-5">
+            <h2 class="font-serif text-white fs-2 mb-2">The Four Pillars of Distillation</h2>
+            <p class="text-secondary small">Every bottle we seal adheres to our ancestral four-step code.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="luxury-card h-100 text-center">
+                    <div class="tasting-note-icon mx-auto mb-3" style="width:48px;height:48px;font-size:1.5rem;"><i class="ph ph-drop"></i></div>
+                    <h4 class="font-serif text-white fs-6 mb-2">Glacial Mineral Waters</h4>
+                    <p class="text-secondary small mb-0">Naturally filtered through centuries of granite bedrock to impart mineral purity.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="luxury-card h-100 text-center">
+                    <div class="tasting-note-icon mx-auto mb-3" style="width:48px;height:48px;font-size:1.5rem;"><i class="ph ph-plant"></i></div>
+                    <h4 class="font-serif text-white fs-6 mb-2">Heritage Botanicals</h4>
+                    <p class="text-secondary small mb-0">Hand-harvested botanicals and heirloom grains sourced from sustainable family estates.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="luxury-card h-100 text-center">
+                    <div class="tasting-note-icon mx-auto mb-3" style="width:48px;height:48px;font-size:1.5rem;"><i class="ph ph-flame"></i></div>
+                    <h4 class="font-serif text-white fs-6 mb-2">Swan-Neck Copper Stills</h4>
+                    <p class="text-secondary small mb-0">Slow, double-pot distillation capturing only the heart of each run.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="luxury-card h-100 text-center">
+                    <div class="tasting-note-icon mx-auto mb-3" style="width:48px;height:48px;font-size:1.5rem;"><i class="ph ph-tree"></i></div>
+                    <h4 class="font-serif text-white fs-6 mb-2">Seasoned Oak Casks</h4>
+                    <p class="text-secondary small mb-0">Aged in toasted American white oak and vintage Spanish sherry butts.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="luxury-card text-center p-5 mb-5">
+        <h3 class="font-serif text-white fs-2 mb-3">Experience The Craft In Every Pour</h3>
+        <p class="text-secondary mb-4 mx-auto" style="max-width:32rem;">
+            Explore our limited edition single malts, reserve agaves, and artisanal botanical blends.
+        </p>
+        <a href="{% url 'store:catalog' %}" class="btn btn-amber px-5 py-3 rounded-pill fw-medium">
+            Explore Spirits Catalog
+        </a>
+    </div>
+
+</div>
+{% endblock %}

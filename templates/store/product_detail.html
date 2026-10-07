@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Aura Spirits{% endblock %}
+
+{% block content %}
+<div class="detail-hero-wrap">
+    <div class="container-xl px-3 px-sm-4">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-custom mb-4">
+            <a href="{% url 'store:home' %}">Home</a>
+            <i class="ph ph-caret-right"></i>
+            <a href="{% url 'store:catalog' %}">Catalog</a>
+            <i class="ph ph-caret-right"></i>
+            <a href="{% url 'store:catalog_by_category' product.category.slug %}">{{ product.category.name }}</a>
+            <i class="ph ph-caret-right"></i>
+            <span class="current">{{ product.name }}</span>
+        </nav>
+
+        <div class="row g-5">
+            <!-- Product Gallery Image -->
+            <div class="col-12 col-lg-6">
+                <div class="product-gallery-box position-relative">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" id="main-product-img">
+                    
+                    <!-- Badges -->
+                    <div class="position-absolute top-0 start-0 m-3 d-flex flex-column gap-2" style="z-index:3;">
+                        {% if product.badge %}
+                            <span class="badge-amber">{{ product.badge_text|default:product.get_badge_display }}</span>
+                        {% endif %}
+                        {% if product.is_on_sale %}
+                            <span class="badge-amber" style="background:#ef4444;">-{{ product.discount_percent }}% OFF</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Wishlist Button -->
+                    <button class="btn-wish position-absolute top-0 end-0 m-3 {% if product.id in wishlist_ids %}active{% endif %}"
+                            style="z-index:3;width:44px;height:44px;font-size:1.25rem;"
+                            onclick="toggleWish(this, {{ product.id }})" 
+                            title="Save to Wishlist">
+                        {% if product.id in wishlist_ids %}
+                            <i class="ph-fill ph-heart"></i>
+                        {% else %}
+                            <i class="ph ph-heart"></i>
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product Purchase & Information Details -->
+            <div class="col-12 col-lg-6">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="spec-badge-pill highlight">{{ product.category.name }}</span>
+                    {% if product.age_years %}
+                    <span class="spec-badge-pill"><i class="ph ph-hourglass"></i> {{ product.age_years }} Years Matured</span>
+                    {% endif %}
+                    <span class="spec-badge-pill"><i class="ph ph-globe"></i> {{ product.origin }}</span>
+                </div>
+
+                <h1 class="font-serif text-white mb-2" style="font-size:clamp(2rem,4vw,2.75rem);font-weight:700;">
+                    {{ product.name }}
+                </h1>
+
+                <!-- Rating -->
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="star-rating">
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star"></i>
+                        <i class="ph-fill ph-star-half"></i>
+                    </div>
+                    <span class="text-white fw-bold small">{{ product.rating }}</span>
+                    <span class="text-muted small">({{ product.review_count }} Sommelier &amp; Member Reviews)</span>
+                </div>
+
+                <!-- Price -->
+                <div class="d-flex align-items-baseline gap-3 mb-4">
+                    <span class="font-serif text-white fs-2 fw-bold" style="color:var(--amber-400);">{{ product.formatted_price }}</span>
+                    {% if product.is_on_sale %}
+                        <span class="text-muted text-decoration-line-through fs-5">{{ product.formatted_original_price }}</span>
+                    {% endif %}
+                    <span class="badge bg-dark border border-secondary text-muted ms-auto small">
+                        {% if product.stock > 0 %}<i class="ph-fill ph-check-circle text-success me-1"></i> In Cellar Stock ({{ product.stock }}){% else %}<span class="text-danger">Allocation Reserved</span>{% endif %}
+                    </span>
+                </div>
+
+                <p class="text-body fw-light mb-4" style="line-height:1.7;">
+                    {{ product.short_description }}
+                </p>
+
+                <!-- Tasting Profile Box -->
+                <div class="tasting-notes-card">
+                    <h4 class="font-serif text-white fs-6 mb-3 text-uppercase" style="letter-spacing:0.15em;">
+                        <i class="ph ph-drop text-warning me-1"></i> Master Distiller Tasting Notes
+                    </h4>
+                    <div class="tasting-note-row">
+                        <div class="tasting-note-icon"><i class="ph ph-wind"></i></div>
+                        <div>
+                            <div class="tasting-note-label">Nose &amp; Aromas</div>
+                            <p class="tasting-note-text">{{ product.nose_notes }}</p>
+                        </div>
+                    </div>
+                    <div class="tasting-note-row">
+                        <div class="tasting-note-icon"><i class="ph ph-martini"></i></div>
+                        <div>
+                            <div class="tasting-note-label">Palate &amp; Mouthfeel</div>
+                            <p class="tasting-note-text">{{ product.palate_notes }}</p>
+                        </div>
+                    </div>
+                    <div class="tasting-note-row">
+                        <div class="tasting-note-icon"><i class="ph ph-sparkle"></i></div>
+                        <div>
+                            <div class="tasting-note-label">Finish</div>
+                            <p class="tasting-note-text">{{ product.finish_notes }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Purchase Controls -->
+                <div class="d-flex gap-3 align-items-center mb-4 flex-wrap">
+                    <div class="cart-qty-ctrl py-1 px-2" style="height:48px;">
+                        <button type="button" class="cart-qty-btn" onclick="adjustQty(-1)"><i class="ph ph-minus"></i></button>
+                        <span class="cart-qty-num px-3 fs-6" id="detail-qty">1</span>
+                        <button type="button" class="cart-qty-btn" onclick="adjustQty(1)"><i class="ph ph-plus"></i></button>
+                    </div>
+
+                    <button class="btn-amber-pill flex-grow-1 py-3 text-center d-flex align-items-center justify-content-center gap-2"
+                            onclick="addDetailToCart(this, {{ product.id }}, '{{ product.name|escapejs }}')">
+                        <i class="ph ph-shopping-cart" style="font-size:1.2rem;"></i>
+                        Add to Cellar Cart
+                    </button>
+                </div>
+
+                <!-- Guarantees -->
+                <div class="row g-2 pt-3 border-top border-secondary border-opacity-25 text-secondary small">
+                    <div class="col-6 d-flex align-items-center gap-2">
+                        <i class="ph ph-truck fs-5" style="color:var(--amber-400);"></i>
+                        <span>Complimentary courier over ₦150</span>
+                    </div>
+                    <div class="col-6 d-flex align-items-center gap-2">
+                        <i class="ph ph-shield-check fs-5" style="color:var(--amber-400);"></i>
+                        <span>100% Authenticity Guarantee</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Full Story & Specifications -->
+        <div class="row g-5 mt-4 pt-5 border-top border-secondary border-opacity-25">
+            <div class="col-12 col-lg-7">
+                <h3 class="font-serif text-white fs-3 mb-3">Distillation &amp; Maturation</h3>
+                <p class="text-body fw-light mb-4" style="line-height:1.8;">
+                    {{ product.full_description|default:product.short_description }}
+                </p>
+                <div class="p-4 rounded-3 mb-4" style="background:var(--charcoal-800);border:1px solid var(--border);">
+                    <h5 class="font-serif text-white fs-6 mb-2 text-uppercase" style="letter-spacing:0.1em;color:var(--amber-400);">
+                        The Aura Standard
+                    </h5>
+                    <p class="text-muted small mb-0" style="line-height:1.6;">
+                        All Aura Spirits selections are bottled without chill-filtration and free from artificial caramel coloring. Our commitment ensures every pour retains its pure aromatic oils, deep natural hue, and cask-derived nuances.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Specifications Table -->
+            <div class="col-12 col-lg-5">
+                <div class="luxury-card">
+                    <h4 class="font-serif text-white fs-5 mb-3">Spirit Specifications</h4>
+                    <div class="spec-table-row">
+                        <span>Category</span>
+                        <span>{{ product.category.name }}</span>
+                    </div>
+                    <div class="spec-table-row">
+                        <span>Alcohol by Volume</span>
+                        <span>{{ product.abv }}% ABV</span>
+                    </div>
+                    <div class="spec-table-row">
+                        <span>Bottle Volume</span>
+                        <span>{{ product.volume }}</span>
+                    </div>
+                    <div class="spec-table-row">
+                        <span>Maturation Cask</span>
+                        <span>{{ product.cask_type|default:'Charred American Oak' }}</span>
+                    </div>
+                    <div class="spec-table-row">
+                        <span>Region of Origin</span>
+                        <span>{{ product.origin }}</span>
+                    </div>
+                    <div class="spec-table-row">
+                        <span>Cellar Release</span>
+                        <span>Batch No. {{ product.id|stringformat:"03d" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Reviews -->
+        <div class="mt-5 pt-5 border-top border-secondary border-opacity-25">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                <div>
+                    <h3 class="font-serif text-white fs-3 mb-1">Tasting Notes &amp; Reviews</h3>
+                    <p class="text-muted small">Verified tasting impressions from our Cellar Club members.</p>
+                </div>
+                <button class="btn btn-outline-ghost py-2 px-4 rounded-3" data-bs-toggle="collapse" data-bs-target="#reviewFormCollapse">
+                    <i class="ph ph-pencil-simple me-1"></i> Write a Review
+                </button>
+            </div>
+
+            <!-- Review Submission Form Collapse -->
+            <div class="collapse mb-4" id="reviewFormCollapse">
+                <div class="luxury-card">
+                    <h4 class="font-serif text-white fs-5 mb-3">Submit Your Tasting Impressions</h4>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="submit_review" value="1">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label class="luxury-label">Your Name</label>
+                                <input type="text" name="author_name" required class="luxury-input" placeholder="e.g. Lord Sterling">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="luxury-label">Rating</label>
+                                <select name="rating" class="luxury-input">
+                                    <option value="5">★★★★★ - 5 Stars (Exceptional)</option>
+                                    <option value="4">★★★★☆ - 4 Stars (Excellent)</option>
+                                    <option value="3">★★★☆☆ - 3 Stars (Good)</option>
+                                    <option value="2">★★☆☆☆ - 2 Stars (Average)</option>
+                                    <option value="1">★☆☆☆☆ - 1 Star</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="luxury-label">Review Headline</label>
+                                <input type="text" name="title" class="luxury-input" placeholder="e.g. Remarkable peat depth and sweet sherry finish">
+                            </div>
+                            <div class="col-12">
+                                <label class="luxury-label">Tasting Comments &amp; Notes</label>
+                                <textarea name="comment" required rows="3" class="luxury-input" placeholder="Share your experience regarding aroma, palate, and finish..."></textarea>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-amber px-4 py-2 rounded-3">Submit Review</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Reviews List -->
+            <div class="row g-3">
+                {% for review in reviews %}
+                <div class="col-12 col-md-6">
+                    <div class="review-card h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-white fw-bold">{{ review.author_name }}</span>
+                            <span class="verified-tag"><i class="ph-fill ph-seal-check"></i> Verified Collector</span>
+                        </div>
+                        <div class="star-rating mb-2">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    <i class="ph-fill ph-star"></i>
+                                {% else %}
+                                    <i class="ph ph-star text-muted"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% if review.title %}
+                        <h6 class="text-white small fw-semibold mb-1">{{ review.title }}</h6>
+                        {% endif %}
+                        <p class="text-muted small mb-0" style="line-height:1.6;">{{ review.comment }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-4 text-muted">
+                    <p>No tasting reviews yet for this bottle. Be the first to share your notes!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Related Bottles Recommendations -->
+        {% if related_products %}
+        <div class="mt-5 pt-5 border-top border-secondary border-opacity-25">
+            <h3 class="font-serif text-white fs-3 mb-4 text-center">You May Also Enjoy</h3>
+            <div class="row g-4">
+                {% for rel in related_products %}
+                <div class="col-12 col-md-4">
+                    <div class="product-card h-100">
+                        <div class="product-img-wrap" style="height:18rem;">
+                            <a href="{{ rel.get_absolute_url }}">
+                                <img src="{{ rel.image_url }}" alt="{{ rel.name }}">
+                            </a>
+                        </div>
+                        <div class="product-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <a href="{{ rel.get_absolute_url }}" class="product-name text-decoration-none mb-0 fs-6">{{ rel.name }}</a>
+                                <span class="product-price">{{ rel.formatted_price }}</span>
+                            </div>
+                            <button class="btn-add-cart py-2" onclick="addToCart(this, {{ rel.id }}, '{{ rel.name|escapejs }}')">
+                                <i class="ph ph-shopping-cart"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let currentQty = 1;
+    function adjustQty(amount) {
+        currentQty = Math.max(1, currentQty + amount);
+        document.getElementById('detail-qty').textContent = currentQty;
+    }
+
+    function addDetailToCart(btn, productId, name) {
+        addToCart(btn, productId, name, currentQty);
+    }
+</script>
+{% endblock %}

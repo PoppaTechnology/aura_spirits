@@ -1,0 +1,20 @@
+<!-- Age Verification Modal -->
+<div id="age-modal">
+    <div class="age-modal-box p-4 p-md-5 mx-3">
+        <div class="age-modal-blob-1"></div>
+        <div class="age-modal-blob-2"></div>
+        <div class="position-relative" style="z-index:2;">
+            <i class="ph ph-martini mb-4 d-block mx-auto" style="font-size:3rem;color:var(--amber-500);"></i>
+            <h2 class="font-serif text-white mb-2 fs-2">Age Verification</h2>
+            <p class="mb-4" style="color:#9ca3af;font-weight:300;">You must be of legal drinking age to enter this site.</p>
+
+            <div class="d-grid gap-3">
+                <button onclick="closeModal()" class="btn btn-amber py-3 rounded-3 fw-medium">I am of legal drinking age</button>
+                <button onclick="denyAccess()" class="btn btn-outline-ghost py-3 rounded-3">I am not</button>
+            </div>
+            <div id="denied-message" class="d-none mt-3 text-danger small">
+                Access denied. You must be of legal drinking age to view our spirits collection.
+            </div>
+        </div>
+    </div>
+</div>

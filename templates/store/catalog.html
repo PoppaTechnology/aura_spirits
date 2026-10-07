@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Full Collection - Aura Spirits Catalog{% endblock %}
+
+{% block content %}
+<div id="page-wrap" class="container-xl px-3 px-sm-4">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-custom">
+        <a href="{% url 'store:home' %}">Home</a>
+        <i class="ph ph-caret-right"></i>
+        <span class="current">Catalog</span>
+        {% if category %}
+            <i class="ph ph-caret-right"></i>
+            <span class="current" style="color:var(--amber-400);">{{ category.name }}</span>
+        {% endif %}
+    </nav>
+
+    <!-- Page Title & Header -->
+    <div class="mb-4">
+        <h1 class="font-serif text-white" style="font-size:clamp(1.75rem,3.5vw,2.5rem);font-weight:700;margin:0 0 0.3rem;">
+            {% if category %}{{ category.name }} Collection{% else %}Our Full Collection{% endif %}
+        </h1>
+        <p style="color:var(--text-secondary);font-size:0.9rem;font-weight:400;margin:0;">
+            {% if category %}{{ category.description }}{% else %}Explore every bottle - from small-batch daily sippers to rare private cellar allocations.{% endif %}
+        </p>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="category-tabs-wrap mb-4 d-flex gap-2 flex-wrap" style="border-bottom:1px solid var(--border);padding-bottom:1rem;">
+        <button class="category-tab btn btn-sm {% if selected_category_slug == 'all' or not selected_category_slug %}active{% endif %}" 
+                data-cat="all" 
+                onclick="handleCategoryTabClick(this)"
+                style="border-radius:9999px;padding:0.4rem 1.1rem;font-size:0.82rem;font-weight:500;letter-spacing:0.05em;border:1px solid var(--border);color:var(--text-body);background:var(--charcoal-800);">
+            All Spirits
+        </button>
+        {% for cat in categories %}
+        <button class="category-tab btn btn-sm {% if selected_category_slug == cat.slug %}active{% endif %}" 
+                data-cat="{{ cat.slug }}" 
+                onclick="handleCategoryTabClick(this)"
+                style="border-radius:9999px;padding:0.4rem 1.1rem;font-size:0.82rem;font-weight:500;letter-spacing:0.05em;border:1px solid var(--border);color:var(--text-body);background:var(--charcoal-800);">
+            {{ cat.name }}
+        </button>
+        {% endfor %}
+    </div>
+
+    <!-- Toolbar & Filter Options -->
+    <div id="toolbar" class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <!-- Live Search -->
+        <div class="search-wrap" style="flex:1;min-width:260px;max-width:460px;">
+            <i class="ph ph-magnifying-glass"></i>
+            <input class="search-input" type="search" id="search-input"
+                placeholder="Search spirits, notes, regions, cask..." 
+                value="{{ query }}"
+                oninput="handleCatalogSearch(this)">
+        </div>
+
+        <!-- Sort Select -->
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <select class="sort-select" id="sort-select" onchange="handleSortChange()">
+                <option value="featured" {% if sort_by == 'featured' %}selected{% endif %}>Sort: Featured</option>
+                <option value="price-asc" {% if sort_by == 'price-asc' %}selected{% endif %}>Price: Low → High</option>
+                <option value="price-desc" {% if sort_by == 'price-desc' %}selected{% endif %}>Price: High → Low</option>
+                <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>Highest Rated</option>
+                <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest Bottles</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Product Grid Section -->
+    <div id="product-grid">
+        {% include 'store/includes/product_grid.html' %}
+    </div>
+
+</div>
+{% endblock %}

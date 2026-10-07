@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout & Secure Allocation - Aura Spirits{% endblock %}
+
+{% block content %}
+<div id="page-wrap" class="container-xl px-3 px-sm-4">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-custom mb-3">
+        <a href="{% url 'store:home' %}">Home</a>
+        <i class="ph ph-caret-right"></i>
+        <a href="{% url 'store:cart' %}">Cart</a>
+        <i class="ph ph-caret-right"></i>
+        <span class="current">Checkout</span>
+    </nav>
+
+    <h1 class="font-serif text-white fs-2 mb-4">Secure Checkout &amp; Allocation</h1>
+
+    <form method="POST" id="checkout-form">
+        {% csrf_token %}
+        <div class="row g-4">
+
+            <!-- Shipping Details & Payment Form Column -->
+            <div class="col-12 col-lg-7">
+                
+                <!-- Recipient & Delivery Information -->
+                <div class="luxury-card mb-4">
+                    <h3 class="font-serif text-white fs-5 mb-3 d-flex align-items-center gap-2">
+                        <i class="ph ph-map-pin" style="color:var(--amber-400);"></i>
+                        1. Delivery &amp; Recipient Information
+                    </h3>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="luxury-label">Full Name *</label>
+                            <input type="text" name="customer_name" required class="luxury-input" placeholder="e.g. Alexander Sterling">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="luxury-label">Email Address *</label>
+                            <input type="email" name="customer_email" required class="luxury-input" placeholder="alexander@domain.com">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="luxury-label">Phone Number *</label>
+                            <input type="tel" name="customer_phone" required class="luxury-input" placeholder="+234 800 123 4567">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="luxury-label">Country / Nation (Type Location) *</label>
+                            <input type="text" name="country" required class="luxury-input" placeholder="e.g. Nigeria, United Kingdom, USA, etc.">
+                        </div>
+                        <div class="col-12">
+                            <label class="luxury-label">Street Address *</label>
+                            <input type="text" name="shipping_address" required class="luxury-input" placeholder="14 Victoria Island Promenade, Suite 4B">
+                        </div>
+                        <div class="col-12 col-md-5">
+                            <label class="luxury-label">City *</label>
+                            <input type="text" name="city" required class="luxury-input" placeholder="Lagos">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="luxury-label">State / Region</label>
+                            <input type="text" name="state" class="luxury-input" placeholder="Lagos State">
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="luxury-label">Postal Code *</label>
+                            <input type="text" name="postal_code" required class="luxury-input" placeholder="101241">
+                        </div>
+                        <div class="col-12">
+                            <label class="luxury-label">Delivery &amp; Courier Instructions (Optional)</label>
+                            <textarea name="delivery_notes" rows="2" class="luxury-input" placeholder="Special handling, estate security gate code, concierge handover instructions..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Direct Admin Settlement & Concierge Payment Notice -->
+                <div class="luxury-card mb-4">
+                    <h3 class="font-serif text-white fs-5 mb-3 d-flex align-items-center gap-2">
+                        <i class="ph ph-hand-coins" style="color:var(--amber-400);"></i>
+                        2. Direct Admin Payment &amp; Concierge Settlement
+                    </h3>
+                    
+                    <p class="text-secondary small mb-3" style="line-height:1.7;">
+                        No credit card pre-payment required. When you click <strong class="text-white">"Place Order &amp; Generate Ticket ID"</strong>, your delivery details and spirits allocation are registered immediately.
+                    </p>
+
+                    <div class="p-3 rounded-3 mb-3" style="background:var(--charcoal-900);border:1px solid var(--border);">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="tasting-note-icon" style="width:36px;height:36px;font-size:1.1rem;flex-shrink:0;">
+                                <i class="ph ph-info"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-white small fw-semibold mb-1">How Settlement Works:</h6>
+                                <ol class="text-secondary small ps-3 mb-0" style="line-height:1.6;font-size:0.82rem;">
+                                    <li>An official <strong class="text-white">Order Ticket ID</strong> is generated for your bottle allocation.</li>
+                                    <li>A verification window provides the direct contact desk &amp; WhatsApp of the <strong class="text-white">Aura Spirits Business Administrator</strong>.</li>
+                                    <li>Contact the admin with your Ticket ID to confirm payment and coordinate white-glove courier delivery.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="payment_method" value="Direct Admin Settlement (Concierge Transfer)">
+
+                    <div class="d-flex align-items-center gap-2 text-secondary small">
+                        <i class="ph ph-shield-check" style="color:var(--amber-400);font-size:1.1rem;"></i>
+                        <span>Direct verified payment • Guaranteed cellar reserve allocation</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Order Summary Column -->
+            <div class="col-12 col-lg-5">
+                <div class="luxury-card position-sticky" style="top:100px;">
+                    <h4 class="font-serif text-white fs-5 mb-3">Order Overview</h4>
+                    
+                    <!-- Item List Preview -->
+                    <div class="d-flex flex-column gap-3 mb-4" style="max-height:280px;overflow-y:auto;">
+                        {% for item in cart %}
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" style="width:50px;height:60px;object-fit:cover;border-radius:0.4rem;border:1px solid var(--border);">
+                            <div class="flex-grow-1">
+                                <span class="d-block text-white small fw-medium">{{ item.product.name }}</span>
+                                <span class="text-secondary small">{{ item.quantity }}x ₦{{ item.price|floatformat:2 }}</span>
+                            </div>
+                            <span class="text-white fw-semibold small">₦{{ item.total_price|floatformat:2 }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="border-top border-secondary border-opacity-25 pt-3">
+                        <div class="d-flex justify-content-between mb-2 text-secondary small">
+                            <span>Subtotal</span>
+                            <span class="text-white">₦{{ cart.get_subtotal|floatformat:2 }}</span>
+                        </div>
+
+                        {% if cart.get_discount > 0 %}
+                        <div class="d-flex justify-content-between mb-2 text-secondary small align-items-center">
+                            <span>Promo Voucher ({{ cart.coupon_code }})</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <span style="color:var(--amber-400);">-₦{{ cart.get_discount|floatformat:2 }}</span>
+                                <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="removeCartCoupon()" title="Remove voucher" style="font-size:0.85rem;text-decoration:none;">✕</button>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Apply Voucher on Checkout -->
+                        <div class="my-3 p-2 rounded-3" style="background:var(--charcoal-900);border:1px solid var(--border);">
+                            <div class="d-flex gap-2">
+                                <input type="text" id="checkout-coupon-input" class="luxury-input py-1" style="font-size:0.85rem;" placeholder="VIP Voucher Code (e.g. ARUA788)" value="{{ cart.coupon_code|default:'' }}">
+                                <button type="button" class="btn btn-sm btn-amber px-3 text-nowrap rounded-2" onclick="applyCheckoutCoupon()">Apply</button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3 text-secondary small">
+                            <span>Courier Delivery</span>
+                            <span>
+                                {% if cart.get_shipping_cost == 0 %}
+                                    <span class="text-white fw-semibold">FREE</span>
+                                {% else %}
+                                    ₦{{ cart.get_shipping_cost|floatformat:2 }}
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-3 border-top border-secondary border-opacity-25 fs-5 fw-bold text-white mb-4">
+                            <span>Total Due</span>
+                            <span style="color:var(--amber-400);">₦{{ cart.get_total_price|floatformat:2 }}</span>
+                        </div>
+
+                        <button type="submit" class="btn btn-amber w-100 py-3 rounded-3 text-uppercase fw-semibold d-flex align-items-center justify-content-center gap-2 mb-3">
+                            <i class="ph ph-ticket"></i> Place Order &amp; Generate Ticket ID
+                        </button>
+
+                        <div class="text-center text-secondary small" style="font-size:0.78rem;">
+                            <p class="mb-1"><i class="ph ph-shield-check me-1" style="color:var(--amber-400);"></i> Official Aura Spirits Concierge Allocation</p>
+                            <p class="mb-0 text-muted">Recipient must present valid government ID confirming legal drinking age upon delivery.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+</div>
+{% endblock %}

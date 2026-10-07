@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Aura Spirits - The Art of Refined Spirits{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section id="hero">
+    <div class="hero-overlay"></div>
+    <div class="container position-relative text-center px-3" style="z-index:2;max-width:56rem;margin-top:5rem;">
+        <span class="hero-eyebrow mb-3 reveal">Distilled to Perfection</span>
+        <h1 class="hero-heading mb-4 reveal" style="transition-delay:200ms;">
+            The Art of <br /> <span class="fst-italic fw-light" style="color:#e5e7eb;">Refined Spirits</span>
+        </h1>
+        <p class="lead mb-5 fw-light mx-auto reveal" style="color:#d1d5db;max-width:42rem;transition-delay:400ms;">
+            Discover our curated collection of artisanal whiskies, rare tequilas, and botanical gins. Crafted for the connoisseur.
+        </p>
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center reveal" style="transition-delay:600ms;">
+            <a href="{% url 'store:catalog' %}" class="btn-amber-pill">Explore Collection</a>
+            <a href="{% url 'store:heritage' %}" class="btn-ghost-pill">Our Story</a>
+        </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator reveal" style="transition-delay:800ms;">
+        <a href="#collections"><i class="ph ph-caret-down" style="font-size:1.875rem;"></i></a>
+    </div>
+</section>
+
+<!-- Collections -->
+<section id="collections">
+    <div class="container-xl px-3 px-sm-4">
+
+        <!-- Heading -->
+        <div class="text-center mb-5 reveal">
+            <h2 class="font-serif text-white fs-1 mb-3">Curated Selection</h2>
+            <hr class="section-divider">
+            <p style="color:var(--text-secondary);max-width:42rem;" class="mx-auto fw-light">
+                Explore our most sought-after bottles, each representing the pinnacle of distillation and oak barrel maturation.
+            </p>
+        </div>
+
+        <!-- Cards Row -->
+        <div class="row g-4">
+            {% for product in featured_products %}
+            <div class="col-12 col-md-6 col-lg-4 reveal" style="transition-delay:{{ forloop.counter0 }}00ms;">
+                <div class="product-card h-100">
+                    <div class="product-img-wrap">
+                        <div class="img-overlay"></div>
+                        <a href="{{ product.get_absolute_url }}">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy">
+                        </a>
+                        
+                        <!-- Badges -->
+                        {% if product.badge %}
+                        <div class="product-badge">
+                            <span class="badge-amber">{{ product.badge_text|default:product.get_badge_display }}</span>
+                        </div>
+                        {% endif %}
+
+                        <!-- Wishlist Toggle -->
+                        <button class="btn-wish position-absolute {% if product.id in wishlist_ids %}active{% endif %}" 
+                                style="top:1rem;right:1rem;z-index:3;" 
+                                onclick="toggleWish(this, {{ product.id }})" 
+                                title="Save to Wishlist">
+                            {% if product.id in wishlist_ids %}
+                                <i class="ph-fill ph-heart"></i>
+                            {% else %}
+                                <i class="ph ph-heart"></i>
+                            {% endif %}
+                        </button>
+                    </div>
+                    <div class="product-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <a href="{{ product.get_absolute_url }}" class="product-name text-decoration-none mb-0">{{ product.name }}</a>
+                            <span class="product-price">{{ product.formatted_price }}</span>
+                        </div>
+                        <p class="product-desc">{{ product.short_description }}</p>
+                        <button class="btn-add-cart" onclick="addToCart(this, {{ product.id }}, '{{ product.name|escapejs }}')">
+                            <i class="ph ph-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-5 text-center reveal">
+            <a href="{% url 'store:catalog' %}" class="link-amber fs-6">
+                View Full Cellar Catalog <i class="ph ph-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Heritage Highlight -->
+<section id="heritage">
+    <div class="heritage-overlay"></div>
+    <div class="container-xl px-3 px-sm-4 position-relative" style="z-index:2;">
+        <div class="row align-items-center g-5">
+
+            <!-- Text -->
+            <div class="col-12 col-lg-6 reveal">
+                <span class="d-block text-uppercase fw-medium mb-2"
+                    style="color:var(--amber-500);font-size:0.875rem;letter-spacing:0.2em;">Our Heritage</span>
+                <h2 class="font-serif text-white mb-4" style="font-size:clamp(2rem,5vw,3rem);">Generations of Craftsmanship</h2>
+                <p class="fw-light mb-4" style="color:#d1d5db;line-height:1.8;">
+                    Founded in 1924, Aura Spirits began with a simple philosophy: never compromise on quality. For
+                    nearly a century, our master distillers have passed down techniques that balance traditional
+                    copper alembic methods with modern innovation.
+                </p>
+                <p class="fw-light mb-4" style="color:#d1d5db;line-height:1.8;">
+                    Every bottle we produce is a testament to patience. From selecting the finest organic grains and
+                    mountain botanicals to the final maturation process in hand-selected European oak casks, we believe that true
+                    perfection takes time.
+                </p>
+
+                <div class="row g-0 heritage-divider mb-4">
+                    <div class="col-6">
+                        <div class="heritage-stat-value">1924</div>
+                        <div class="heritage-stat-label">Year Established</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="heritage-stat-value">50+</div>
+                        <div class="heritage-stat-label">Awards Won</div>
+                    </div>
+                </div>
+
+                <a href="{% url 'store:heritage' %}" class="btn-white-pill">Read Our Full Story</a>
+            </div>
+
+            <!-- Image grid (lg+) -->
+            <div class="col-lg-6 d-none d-lg-grid reveal"
+                style="grid-template-columns:1fr 1fr;gap:1rem;transition-delay:200ms;">
+                <img src="https://images.pexels.com/photos/28792579/pexels-photo-28792579.jpeg"
+                    alt="Distillery" class="rounded-3 w-100 shadow"
+                    style="height:16rem;object-fit:cover;transform:translateY(2rem);border:1px solid rgba(255,255,255,0.1);">
+                <img src="https://images.unsplash.com/photo-1600785083041-3d6506387699?q=80&w=687&auto=format&fit=crop"
+                    alt="Barrels" class="rounded-3 w-100 shadow"
+                    style="height:16rem;object-fit:cover;border:1px solid rgba(255,255,255,0.1);">
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section id="newsletter" style="padding:6rem 0;background-color:var(--charcoal-900);">
+    <div class="container" style="max-width:56rem;">
+        <div class="text-center reveal">
+            <i class="ph ph-envelope-simple-open d-block mb-3 mx-auto"
+                style="font-size:2.5rem;color:var(--amber-500);"></i>
+            <h2 class="font-serif text-white fs-2 mb-3">Join The Cellar Club</h2>
+            <p class="fw-light mb-4 mx-auto" style="color:var(--text-secondary);max-width:32rem;">
+                Subscribe to our private newsletter for early access to limited cask releases, exclusive tasting events, and member-only allocations.
+            </p>
+            <form class="d-flex flex-column flex-sm-row gap-3 justify-content-center mx-auto"
+                style="max-width:28rem;"
+                onsubmit="handleNewsletterSubmit(event, this)">
+                <input type="email" placeholder="Enter your email address" required class="newsletter-input">
+                <button type="submit" class="btn btn-amber px-4 py-2 rounded-3 text-nowrap">Subscribe</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

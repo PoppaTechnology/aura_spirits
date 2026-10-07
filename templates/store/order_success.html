@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Ticket #{{ order.order_number }} - Aura Spirits{% endblock %}
+
+{% block content %}
+<div id="page-wrap" class="container-xl px-3 px-sm-4" style="max-width:54rem;">
+
+    <!-- Success Header & Order Ticket Badge -->
+    <div class="order-success-hero">
+        <div class="order-badge-seal mb-3">
+            <i class="ph ph-receipt"></i>
+        </div>
+        <span class="order-eyebrow d-block text-uppercase fw-semibold mb-2">Order Allocation Confirmed</span>
+        <h1 class="font-serif text-white fs-2 mb-2">Thank You, {{ order.customer_name }}</h1>
+        <p class="text-secondary small mx-auto mb-4" style="max-width:32rem;line-height:1.7;">
+            Your bottle allocation and delivery details have been recorded in our cellar registry. Please quote your Order Ticket ID below to complete settlement with our concierge.
+        </p>
+        
+        <!-- Official Ticket ID Banner -->
+        <div class="ticket-header-box d-inline-flex align-items-center gap-3 px-4 py-2 rounded-3">
+            <span class="text-secondary small text-uppercase" style="letter-spacing:0.05em;">Order Ticket ID:</span>
+            <strong class="text-white font-monospace fs-5" id="page-ticket-id">{{ order.order_number }}</strong>
+            <button class="btn btn-sm btn-outline-ghost py-1 px-3" onclick="copyTicket('{{ order.order_number }}')" title="Copy Ticket ID">
+                <i class="ph ph-copy me-1"></i> Copy ID
+            </button>
+        </div>
+    </div>
+
+    <!-- Direct Concierge & Admin Payment Settlement Desk -->
+    <div class="luxury-card mb-4" style="border-color:rgba(217, 119, 6, 0.3);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-3 border-bottom border-secondary border-opacity-25">
+            <h3 class="font-serif text-white fs-5 mb-0 d-flex align-items-center gap-2">
+                <i class="ph ph-shield-check" style="color:var(--amber-400);font-size:1.35rem;"></i>
+                Concierge &amp; Admin Payment Settlement
+            </h3>
+            <span class="badge px-3 py-1 fw-medium" style="background:rgba(217, 119, 6, 0.12);color:var(--amber-400);border:1px solid rgba(217, 119, 6, 0.25);">
+                Pending Admin Settlement
+            </span>
+        </div>
+
+        <p class="text-secondary small mb-3" style="line-height:1.7;">
+            To finalize your allocation and schedule dispatch, please contact the <strong class="text-white">Aura Spirits Business Administrator</strong> via Phone or WhatsApp quoting your <strong class="text-white">Ticket ID: {{ order.order_number }}</strong>.
+        </p>
+
+        <div class="row g-3 mb-3">
+            <!-- Direct Phone Desk -->
+            <div class="col-12 col-md-6">
+                <div class="p-3 rounded-3 h-100" style="background:var(--charcoal-900);border:1px solid var(--border);">
+                    <span class="luxury-label mb-1">Direct Telephone Desk</span>
+                    <h5 class="text-white fs-6 mb-1 font-serif">Executive Cellar Concierge</h5>
+                    <div class="d-flex align-items-center gap-2 fs-6 fw-semibold mt-2" style="color:var(--amber-400);">
+                        <i class="ph ph-phone-call"></i>
+                        <a href="tel:+18005552872" class="text-decoration-none" style="color:var(--amber-400);">+1 (800) 555-AURA (2872)</a>
+                    </div>
+                    <div class="text-secondary small mt-1" style="font-size:0.78rem;">Voice verification &amp; transfer guidance</div>
+                </div>
+            </div>
+
+            <!-- WhatsApp Concierge Desk -->
+            <div class="col-12 col-md-6">
+                <div class="p-3 rounded-3 h-100" style="background:var(--charcoal-900);border:1px solid var(--border);">
+                    <span class="luxury-label mb-1">Instant Messaging Desk</span>
+                    <h5 class="text-white fs-6 mb-1 font-serif">Cellar Admin WhatsApp</h5>
+                    <div class="d-flex align-items-center gap-2 fs-6 fw-semibold mt-2" style="color:var(--amber-400);">
+                        <i class="ph ph-chat-circle-dots"></i>
+                        <a href="https://wa.me/18005552872?text=Hello%20Aura%20Spirits%20Admin,%20I%20have%20placed%20order%20Ticket%20ID:%20{{ order.order_number }}%20totaling%20%E2%82%A6{{ order.total|floatformat:2 }}.%20Please%20guide%20me%20on%20making%20payment." 
+                           target="_blank" class="text-decoration-none" style="color:var(--amber-400);">
+                            Chat With Administrator
+                        </a>
+                    </div>
+                    <div class="text-secondary small mt-1" style="font-size:0.78rem;">Email: <span class="text-white">admin@auraspirits.com</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center pt-2">
+            <div class="text-secondary small">
+                <span class="text-muted">Total Amount to Settle:</span> <strong class="text-white fs-6 ms-1">₦{{ order.total|floatformat:2 }}</strong>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-ghost btn-sm px-3" data-bs-toggle="modal" data-bs-target="#adminPaymentModal">
+                    <i class="ph ph-receipt me-1"></i> View Ticket Modal
+                </button>
+                <a href="tel:+18005552872" class="btn btn-amber btn-sm px-3">
+                    <i class="ph ph-phone me-1"></i> Call Concierge
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Tracker Timeline -->
+    <div class="order-tracker">
+        <div class="tracker-step active">
+            <div class="tracker-circle"><i class="ph ph-check"></i></div>
+            <div class="tracker-label">Ticket Recorded</div>
+        </div>
+        <div class="tracker-step active">
+            <div class="tracker-circle"><i class="ph ph-credit-card"></i></div>
+            <div class="tracker-label">Admin Settlement</div>
+        </div>
+        <div class="tracker-step">
+            <div class="tracker-circle"><i class="ph ph-package"></i></div>
+            <div class="tracker-label">Cellar Packing</div>
+        </div>
+        <div class="tracker-step">
+            <div class="tracker-circle"><i class="ph ph-truck"></i></div>
+            <div class="tracker-label">Courier Dispatch</div>
+        </div>
+        <div class="tracker-step">
+            <div class="tracker-circle"><i class="ph ph-seal-check"></i></div>
+            <div class="tracker-label">Handover</div>
+        </div>
+    </div>
+
+    <!-- Order Ticket & Summary Certificate Card -->
+    <div class="luxury-card mb-4">
+        <div class="row g-4 mb-4 pb-4 border-bottom border-secondary border-opacity-25">
+            <div class="col-12 col-md-6">
+                <span class="luxury-label">Shipping Destination</span>
+                <p class="text-white mb-1 fw-semibold">{{ order.customer_name }}</p>
+                <p class="text-secondary small mb-0" style="line-height:1.6;">
+                    {{ order.shipping_address }}<br>
+                    {{ order.city }}, {{ order.state }} {{ order.postal_code }}<br>
+                    {{ order.country }}
+                </p>
+                {% if order.delivery_notes %}
+                <div class="mt-2 p-2 rounded small" style="background:var(--charcoal-900);border:1px solid var(--border);color:var(--text-secondary);">
+                    <strong class="text-white">Delivery Note:</strong> {{ order.delivery_notes }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-12 col-md-6">
+                <span class="luxury-label">Allocation &amp; Contact Record</span>
+                <p class="text-secondary small mb-1"><strong class="text-white">Email:</strong> {{ order.customer_email }}</p>
+                <p class="text-secondary small mb-1"><strong class="text-white">Phone:</strong> {{ order.customer_phone }}</p>
+                <p class="text-secondary small mb-0"><strong class="text-white">Payment Protocol:</strong> {{ order.payment_method }}</p>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <h4 class="font-serif text-white fs-6 mb-3 text-uppercase" style="letter-spacing:0.1em;">Reserved Spirits Allocation</h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-borderless align-middle mb-0" style="background:transparent;">
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr style="border-bottom:1px solid rgba(255, 255, 255, 0.05);">
+                        <td style="width:50px;">
+                            {% if item.product_image %}
+                            <img src="{{ item.product_image }}" alt="{{ item.product_name }}" style="width:44px;height:55px;object-fit:cover;border-radius:0.35rem;border:1px solid var(--border);">
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="text-white fw-medium d-block font-serif">{{ item.product_name }}</span>
+                            <span class="text-secondary small">{{ item.quantity }}x @ ₦{{ item.price|floatformat:2 }}</span>
+                        </td>
+                        <td class="text-end fw-semibold text-white">
+                            ₦{{ item.item_total|floatformat:2 }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totals Breakdown -->
+        <div class="pt-3 border-top border-secondary border-opacity-25 mt-3">
+            <div class="d-flex justify-content-between mb-1 text-secondary small">
+                <span>Subtotal</span>
+                <span class="text-white">₦{{ order.subtotal|floatformat:2 }}</span>
+            </div>
+            {% if order.discount > 0 %}
+            <div class="d-flex justify-content-between mb-1 text-secondary small">
+                <span>Voucher Discount ({{ order.coupon_code }})</span>
+                <span style="color:var(--amber-400);">-₦{{ order.discount|floatformat:2 }}</span>
+            </div>
+            {% endif %}
+            <div class="d-flex justify-content-between mb-2 text-secondary small">
+                <span>White Glove Courier</span>
+                <span>{% if order.shipping_cost == 0 %}<span class="text-white fw-semibold">FREE</span>{% else %}₦{{ order.shipping_cost|floatformat:2 }}{% endif %}</span>
+            </div>
+            <div class="d-flex justify-content-between pt-2 border-top border-secondary border-opacity-25 fs-5 fw-bold text-white">
+                <span>Total Due</span>
+                <span style="color:var(--amber-400);">₦{{ order.total|floatformat:2 }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-center gap-3 mb-5 flex-wrap">
+        <button onclick="window.print()" class="btn btn-outline-ghost px-4 py-2 rounded-3">
+            <i class="ph ph-printer me-1"></i> Print Ticket &amp; Invoice
+        </button>
+        <a href="{% url 'store:catalog' %}" class="btn btn-amber px-4 py-2 rounded-3">
+            Continue Exploring Collection
+        </a>
+    </div>
+
+</div>
+
+<!-- Direct Payment Concierge Modal -->
+<div class="modal fade" id="adminPaymentModal" tabindex="-1" aria-labelledby="adminPaymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:540px;">
+        <div class="modal-content luxury-modal-content p-4">
+            <div class="modal-header border-0 pb-0 justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="order-badge-seal" style="width:40px;height:40px;font-size:1.2rem;margin:0;">
+                        <i class="ph ph-ticket"></i>
+                    </div>
+                    <div>
+                        <h4 class="modal-title font-serif text-white fs-5" id="adminPaymentModalLabel">Order Ticket Generated</h4>
+                        <span class="text-secondary small text-uppercase" style="letter-spacing:0.08em;font-size:0.75rem;">Direct Concierge Settlement</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body py-4">
+                <!-- Ticket ID Highlighting -->
+                <div class="text-center p-3 rounded-3 mb-4" style="background:var(--charcoal-900);border:1px solid var(--border);">
+                    <span class="luxury-label d-block mb-1">Your Order Ticket ID</span>
+                    <div class="d-flex align-items-center justify-content-center gap-2">
+                        <span class="font-monospace fs-3 fw-bold text-white" id="modal-ticket-code">{{ order.order_number }}</span>
+                        <button class="btn btn-sm btn-amber px-2 py-1" onclick="copyTicket('{{ order.order_number }}')" title="Copy ID">
+                            <i class="ph ph-copy"></i>
+                        </button>
+                    </div>
+                    <span class="d-block text-secondary small mt-2">Total Due: <strong class="text-white">₦{{ order.total|floatformat:2 }}</strong></span>
+                </div>
+
+                <!-- Admin Contact Info -->
+                <div class="admin-contact-card mb-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <strong class="text-white d-block font-serif">Executive Cellar Administrator</strong>
+                            <span class="text-secondary small" style="font-size:0.78rem;">Aura Spirits Management Desk</span>
+                        </div>
+                        <span class="badge px-2 py-1" style="background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid var(--border);font-size:0.72rem;">Available</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 fs-5 fw-semibold mb-2" style="color:var(--amber-400);">
+                        <i class="ph ph-phone"></i>
+                        <a href="tel:+18005552872" class="text-decoration-none" style="color:var(--amber-400);">+1 (800) 555-AURA (2872)</a>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-secondary small mb-1">
+                        <i class="ph ph-envelope"></i>
+                        <span>admin@auraspirits.com</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-secondary small">
+                        <i class="ph ph-map-pin"></i>
+                        <span>Speyside Cellars, Scotland</span>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="p-3 rounded-3 mb-2" style="background:var(--charcoal-900);border:1px solid var(--border);">
+                    <h6 class="text-white small fw-semibold mb-1"><i class="ph ph-info me-1" style="color:var(--amber-400);"></i> Settlement Instructions:</h6>
+                    <p class="text-secondary small mb-0" style="line-height:1.6;font-size:0.8rem;">
+                        Contact the business administrator and state your <strong class="text-white">Ticket ID ({{ order.order_number }})</strong> to confirm payment. Once confirmed, your bottles are dispatched for white-glove delivery.
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 pt-0 d-flex flex-column flex-sm-row gap-2">
+                <a href="tel:+18005552872" class="btn btn-amber flex-grow-1 py-2 d-flex align-items-center justify-content-center gap-2">
+                    <i class="ph ph-phone-call"></i> Call Concierge
+                </a>
+                <a href="https://wa.me/18005552872?text=Hello%20Aura%20Spirits%20Admin,%20I%20have%20placed%20order%20Ticket%20ID:%20{{ order.order_number }}%20totaling%20%E2%82%A6{{ order.total|floatformat:2 }}.%20Please%20guide%20me%20on%20making%20payment." 
+                   target="_blank" class="btn btn-outline-ghost flex-grow-1 py-2 d-flex align-items-center justify-content-center gap-2">
+                    <i class="ph ph-chat-circle-dots"></i> WhatsApp Desk
+                </a>
+                <button type="button" class="btn btn-outline-ghost py-2 px-3" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function copyTicket(code) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(code).then(() => {
+                showToast("Order Ticket ID copied: " + code);
+            });
+        } else {
+            showToast("Order Ticket ID: " + code);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Automatically open the Admin Payment Modal on page load
+        setTimeout(() => {
+            const paymentModalEl = document.getElementById('adminPaymentModal');
+            if (paymentModalEl && typeof bootstrap !== 'undefined') {
+                const modalInstance = new bootstrap.Modal(paymentModalEl);
+                modalInstance.show();
+            }
+        }, 400);
+    });
+</script>
+{% endblock %}

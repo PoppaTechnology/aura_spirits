@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Saved Spirits Wishlist - Aura Spirits{% endblock %}
+
+{% block content %}
+<div id="page-wrap" class="container-xl px-3 px-sm-4">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-custom mb-3">
+        <a href="{% url 'store:home' %}">Home</a>
+        <i class="ph ph-caret-right"></i>
+        <a href="{% url 'store:catalog' %}">Catalog</a>
+        <i class="ph ph-caret-right"></i>
+        <span class="current">Saved Spirits</span>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+        <div>
+            <h1 class="font-serif text-white fs-2 mb-1">Your Saved Spirits Wishlist</h1>
+            <p class="text-secondary small mb-0">Curate your personal collection before cellaring or purchase.</p>
+        </div>
+        <div class="text-secondary small">
+            <strong class="text-white">{{ products.count }}</strong> saved bottles
+        </div>
+    </div>
+
+    {% if products %}
+    <div id="product-grid">
+        {% for product in products %}
+        <div class="drink-card reveal active">
+            <div class="card-img-wrap">
+                <a href="{{ product.get_absolute_url }}">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                </a>
+                <div class="card-scrim"></div>
+
+                <div class="quick-overlay">
+                    <button class="btn-quick-add" onclick="quickAdd(this, {{ product.id }}, '{{ product.name|escapejs }}')">
+                        <i class="ph ph-shopping-cart"></i> Quick Add
+                    </button>
+                </div>
+
+                <div class="card-badges">
+                    {% if product.badge %}
+                        <span class="badge-pill badge-{{ product.badge }}">{{ product.badge_text|default:product.get_badge_display }}</span>
+                    {% endif %}
+                </div>
+
+                <button class="btn-wish active" onclick="toggleWish(this, {{ product.id }})" title="Remove from Wishlist">
+                    <i class="ph-fill ph-heart"></i>
+                </button>
+            </div>
+
+            <div class="card-body-custom">
+                <div class="card-meta-row">
+                    <a href="{{ product.get_absolute_url }}" class="card-name text-decoration-none text-white">{{ product.name }}</a>
+                    <span class="card-price">{{ product.formatted_price }}</span>
+                </div>
+                <p class="card-desc">{{ product.short_description }}</p>
+                <div class="d-flex align-items-center justify-content-between mb-3 text-secondary" style="font-size:0.78rem;">
+                    <span><i class="ph ph-drop text-warning"></i> {{ product.abv }}% ABV • {{ product.volume }}</span>
+                    <span><i class="ph-fill ph-star text-warning"></i> {{ product.rating }}</span>
+                </div>
+                <button class="btn-add-to-cart" onclick="addToCart(this, {{ product.id }}, '{{ product.name|escapejs }}')">
+                    <i class="ph ph-shopping-cart"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty Wishlist -->
+    <div class="text-center py-5 luxury-card">
+        <i class="ph ph-heart text-warning mb-3" style="font-size:4rem;display:block;"></i>
+        <h3 class="font-serif text-white fs-3 mb-2">Your Wishlist is Empty</h3>
+        <p class="text-secondary mb-4" style="max-width:30rem;margin:0 auto 1.5rem;">
+            Click the heart icon on any bottle across our catalog to save your favorite spirits for later.
+        </p>
+        <a href="{% url 'store:catalog' %}" class="btn btn-amber px-5 py-3 rounded-pill fw-medium">
+            Explore Collection
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

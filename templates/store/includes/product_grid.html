@@ -1,0 +1,92 @@
+<!-- Product Grid -->
+{% if products %}
+    {% for product in products %}
+    <div class="drink-card reveal active" data-cat="{{ product.category.slug }}" data-price="{{ product.price }}" data-rating="{{ product.rating }}" data-name="{{ product.name }}">
+        <div class="card-img-wrap">
+            <a href="{{ product.get_absolute_url }}">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy">
+            </a>
+            <div class="card-scrim"></div>
+            
+            <!-- Quick Add Overlay -->
+            <div class="quick-overlay">
+                <button class="btn-quick-add" onclick="quickAdd(this, {{ product.id }}, '{{ product.name|escapejs }}')">
+                    <i class="ph ph-shopping-cart"></i> Quick Add
+                </button>
+            </div>
+
+            <!-- Badges -->
+            <div class="card-badges">
+                {% if product.badge %}
+                    <span class="badge-pill badge-{{ product.badge }}">{{ product.badge_text|default:product.get_badge_display }}</span>
+                {% endif %}
+                {% if product.is_on_sale %}
+                    <span class="badge-pill badge-sale">-{{ product.discount_percent }}% OFF</span>
+                {% endif %}
+            </div>
+
+            <!-- Wishlist Button -->
+            <button class="btn-wish {% if product.id in wishlist_ids %}active{% endif %}" onclick="toggleWish(this, {{ product.id }})" title="Save to Wishlist">
+                {% if product.id in wishlist_ids %}
+                    <i class="ph-fill ph-heart"></i>
+                {% else %}
+                    <i class="ph ph-heart"></i>
+                {% endif %}
+            </button>
+        </div>
+
+        <div class="card-body-custom">
+            <div class="card-meta-row">
+                <a href="{{ product.get_absolute_url }}" class="card-name text-decoration-none text-white">{{ product.name }}</a>
+                <span class="card-price">
+                    {% if product.is_on_sale %}
+                        <span class="original-price">{{ product.formatted_original_price }}</span>
+                    {% endif %}
+                    {{ product.formatted_price }}
+                </span>
+            </div>
+            <p class="card-desc">{{ product.short_description }}</p>
+            <div class="d-flex align-items-center justify-content-between mb-3 text-secondary" style="font-size:0.78rem;">
+                <span><i class="ph ph-drop text-warning"></i> {{ product.abv }}% ABV • {{ product.volume }}</span>
+                <span><i class="ph-fill ph-star text-warning"></i> {{ product.rating }} ({{ product.review_count }})</span>
+            </div>
+            <button class="btn-add-to-cart" onclick="addToCart(this, {{ product.id }}, '{{ product.name|escapejs }}')">
+                <i class="ph ph-shopping-cart"></i> Add to Cart
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <!-- Empty State -->
+    <div id="empty-state" style="display:block;grid-column: 1 / -1;text-align:center;padding:4rem 1rem;">
+        <i class="ph ph-wine mb-3" style="font-size:3.5rem;color:var(--amber-500);display:block;"></i>
+        <h3 class="font-serif text-white fs-4 mb-2">No spirits found</h3>
+        <p class="text-secondary" style="max-width:30rem;margin:0 auto 1.5rem;">Try adjusting your filters or search keywords to explore more of our private cellar collection.</p>
+        <button onclick="clearFilters()" class="btn btn-outline-ghost px-4 py-2 rounded-pill">Reset All Filters</button>
+    </div>
+{% endif %}
+
+<!-- Pagination if applicable -->
+{% if products.has_other_pages %}
+<div id="pagination" style="grid-column: 1 / -1;display:flex;justify-content:center;gap:0.4rem;margin-top:2.5rem;">
+    {% if products.has_previous %}
+        <a href="?page={{ products.previous_page_number }}{% if selected_category_slug and selected_category_slug != 'all' %}&category={{ selected_category_slug }}{% endif %}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="page-btn text-decoration-none"><i class="ph ph-caret-left"></i></a>
+    {% else %}
+        <span class="page-btn disabled"><i class="ph ph-caret-left"></i></span>
+    {% endif %}
+
+    {% for num in products.paginator.page_range %}
+        {% if products.number == num %}
+            <span class="page-btn active">{{ num }}</span>
+        {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+            <a href="?page={{ num }}{% if selected_category_slug and selected_category_slug != 'all' %}&category={{ selected_category_slug }}{% endif %}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="page-btn text-decoration-none">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if products.has_next %}
+        <a href="?page={{ products.next_page_number }}{% if selected_category_slug and selected_category_slug != 'all' %}&category={{ selected_category_slug }}{% endif %}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="page-btn text-decoration-none"><i class="ph ph-caret-right"></i></a>
+    {% else %}
+        <span class="page-btn disabled"><i class="ph ph-caret-right"></i></span>
+    {% endif %}
+</div>
+{% endif %}

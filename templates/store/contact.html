@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}VIP Concierge &amp; Tasting Inquiries - Aura Spirits{% endblock %}
+
+{% block content %}
+<div id="page-wrap" class="container-xl px-3 px-sm-4">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-custom mb-3">
+        <a href="{% url 'store:home' %}">Home</a>
+        <i class="ph ph-caret-right"></i>
+        <span class="current">Contact &amp; VIP Concierge</span>
+    </nav>
+
+    <div class="mb-5">
+        <span class="hero-eyebrow mb-2">Private Cellar Advisory</span>
+        <h1 class="font-serif text-white fs-1 mb-2">Connect With Our Sommelier Concierge</h1>
+        <p class="text-secondary fw-light" style="max-width:38rem;">
+            Whether you are arranging a private distillery tasting, inquiring about rare cask allocations, or seeking hospitality partnerships, our cellar masters are at your disposal.
+        </p>
+    </div>
+
+    <div class="row g-5">
+        <!-- Inquiry Form Column -->
+        <div class="col-12 col-lg-7">
+            <div class="luxury-card">
+                <h3 class="font-serif text-white fs-4 mb-4">Send an Inquiry</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="luxury-label">Your Name *</label>
+                            <input type="text" name="name" required class="luxury-input" placeholder="e.g. Eleanor Vance">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="luxury-label">Email Address *</label>
+                            <input type="email" name="email" required class="luxury-input" placeholder="eleanor@domain.com">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="luxury-label">Inquiry Subject *</label>
+                            <input type="text" name="subject" required class="luxury-input" placeholder="e.g. Private Cellar Tasting Session">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="luxury-label">Inquiry Type</label>
+                            <select name="inquiry_type" class="luxury-input">
+                                <option value="General Inquiry">General Inquiry</option>
+                                <option value="Private Tasting">Private Tasting &amp; Masterclass</option>
+                                <option value="Cellar Advisory">Rare Cellar Allocation Advisory</option>
+                                <option value="Wholesale">Hospitality &amp; Wholesale</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="luxury-label">Message Details *</label>
+                            <textarea name="message" required rows="5" class="luxury-input" placeholder="Describe your request, desired date, bottle interest, or guest count..."></textarea>
+                        </div>
+                        <div class="col-12 text-end">
+                            <button type="submit" class="btn btn-amber px-5 py-3 rounded-3 text-uppercase fw-semibold" style="font-size:0.85rem;letter-spacing:0.1em;">
+                                Transmit Inquiry
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Information & Concierge Column -->
+        <div class="col-12 col-lg-5">
+            <div class="d-flex flex-column gap-4">
+                
+                <div class="luxury-card">
+                    <h4 class="font-serif text-white fs-5 mb-3 d-flex align-items-center gap-2">
+                        <i class="ph ph-compass text-warning"></i>
+                        Distillery Cellars
+                    </h4>
+                    <p class="text-secondary small mb-3">
+                        Aura Spirits Estate &amp; Cellars<br>
+                        42 Highland Glen Way<br>
+                        Speyside, Highlands, IV38 7NP
+                    </p>
+                    <div class="d-flex align-items-center gap-2 text-secondary small mb-2">
+                        <i class="ph ph-envelope text-warning"></i>
+                        <span>concierge@auraspirits.com</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-secondary small">
+                        <i class="ph ph-phone text-warning"></i>
+                        <span class="text-white">+1 (800) 555-AURA (2872)</span>
+                    </div>
+                </div>
+
+                <div class="luxury-card">
+                    <h4 class="font-serif text-white fs-5 mb-3 d-flex align-items-center gap-2">
+                        <i class="ph ph-clock text-warning"></i>
+                        Private Tasting Hours
+                    </h4>
+                    <div class="spec-table-row">
+                        <span>Tuesday – Friday</span>
+                        <span>11:00 AM – 6:00 PM</span>
+                    </div>
+                    <div class="spec-table-row">
+                        <span>Saturday Cellar Tour</span>
+                        <span>12:00 PM – 8:00 PM</span>
+                    </div>
+                    <div class="spec-table-row">
+                        <span>Sunday &amp; Monday</span>
+                        <span>Private Allocations Only</span>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-3 text-center" style="background:rgba(217, 119, 6, 0.08);border:1px solid rgba(217, 119, 6, 0.25);">
+                    <i class="ph ph-seal-check text-warning fs-2 mb-2"></i>
+                    <h5 class="font-serif text-white fs-6 mb-1">Guaranteed 24-Hour Response</h5>
+                    <p class="text-secondary small mb-0">Our dedicated sommeliers personally answer every inquiry.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

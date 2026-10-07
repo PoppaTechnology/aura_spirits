@@ -1,0 +1,98 @@
+<!-- Cart Drawer Backdrop -->
+<div id="cart-drawer-backdrop" onclick="closeCartDrawer()"></div>
+
+<!-- Cart Offcanvas Drawer -->
+<div id="cart-drawer">
+    <!-- Drawer Header -->
+    <div class="cart-drawer-header">
+        <h3 class="cart-drawer-title">
+            <i class="ph ph-shopping-bag" style="color:var(--amber-500);"></i>
+            Cellar Cart
+        </h3>
+        <button class="cart-drawer-close" onclick="closeCartDrawer()" title="Close Cart">
+            <i class="ph ph-x"></i>
+        </button>
+    </div>
+
+    <!-- Free Shipping Progress Bar -->
+    <div class="shipping-bar-wrap">
+        <div class="shipping-bar-text" id="drawer-shipping-msg">
+            {% if cart.get_shipping_cost == 0 and cart.get_subtotal > 0 %}
+                <span><i class="ph-fill ph-check-circle" style="color:var(--amber-400);"></i> <strong>Unlocked FREE White Glove Courier</strong></span>
+            {% else %}
+                <span>Add <strong style="color:var(--amber-400);">₦{{ cart.get_free_shipping_progress.1|floatformat:2 }}</strong> more for <strong>FREE Courier Delivery</strong></span>
+            {% endif %}
+        </div>
+        <div class="shipping-bar-progress">
+            <div class="shipping-bar-fill" id="drawer-shipping-bar" style="width: {{ cart.get_free_shipping_progress.0 }}%;"></div>
+        </div>
+    </div>
+
+    <!-- Drawer Items List -->
+    <div class="cart-drawer-items" id="drawer-items-container">
+        {% if cart %}
+            {% for item in cart %}
+                <div class="cart-item-card">
+                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" class="cart-item-img">
+                    <div class="cart-item-info">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <span class="cart-item-cat">{{ item.product.category.name }} • {{ item.product.volume }}</span>
+                                <a href="{{ item.product.get_absolute_url }}" class="cart-item-title d-block">{{ item.product.name }}</a>
+                            </div>
+                            <button class="cart-item-del" onclick="apiRemoveFromCart({{ item.product.id }})" title="Remove item">
+                                <i class="ph ph-trash"></i>
+                            </button>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <div class="cart-qty-ctrl">
+                                <button class="cart-qty-btn" onclick="apiUpdateCart({{ item.product.id }}, {{ item.quantity|add:'-1' }})"><i class="ph ph-minus"></i></button>
+                                <span class="cart-qty-num">{{ item.quantity }}</span>
+                                <button class="cart-qty-btn" onclick="apiUpdateCart({{ item.product.id }}, {{ item.quantity|add:'1' }})"><i class="ph ph-plus"></i></button>
+                            </div>
+                            <span class="cart-item-price">₦{{ item.total_price|floatformat:2 }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-5">
+                <i class="ph ph-shopping-bag text-secondary mb-3" style="font-size:3rem;display:block;opacity:0.5;"></i>
+                <h4 class="font-serif text-white mb-2 fs-5">Your Cellar Cart is Empty</h4>
+                <p class="text-secondary small mb-4">Explore our curated collection of artisanal whiskies and fine spirits.</p>
+                <a href="{% url 'store:catalog' %}" class="btn-amber-pill py-2 px-4" style="font-size:0.8rem;" onclick="closeCartDrawer()">Explore Catalog</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="cart-drawer-footer">
+        <div class="cart-summary-line">
+            <span>Subtotal</span>
+            <span id="drawer-subtotal">₦{{ cart.get_subtotal|floatformat:2 }}</span>
+        </div>
+        <div class="cart-summary-line">
+            <span>Courier Delivery</span>
+            <span id="drawer-shipping">
+                {% if cart.get_shipping_cost == 0 %}
+                    <span class="text-white fw-semibold">FREE</span>
+                {% else %}
+                    ₦{{ cart.get_shipping_cost|floatformat:2 }}
+                {% endif %}
+            </span>
+        </div>
+        <div class="cart-summary-line total">
+            <span>Estimated Total</span>
+            <span id="drawer-total">₦{{ cart.get_total_price|floatformat:2 }}</span>
+        </div>
+        
+        <div class="d-grid gap-2 mt-3">
+            <a href="{% url 'store:checkout' %}" class="btn-drawer-checkout mt-0">
+                Proceed to Checkout <i class="ph ph-arrow-right ms-1"></i>
+            </a>
+            <a href="{% url 'store:cart' %}" class="btn btn-outline-ghost py-2 rounded-3 text-center text-uppercase fw-medium" style="font-size:0.8rem;letter-spacing:0.08em;" onclick="closeCartDrawer()">
+                View Full Cart
+            </a>
+        </div>
+    </div>
+</div>
