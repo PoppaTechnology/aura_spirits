@@ -4,12 +4,16 @@ Django settings for aura_spirits_config project.
 
 from pathlib import Path
 import os
+import shutil
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-aura-spirits-luxury-beverages-secret-key-2025'
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "temporary-demo-only-secret",
+)
 
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "0") == "1"
 
 ALLOWED_HOSTS = ['*']
 
@@ -55,12 +59,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'aura_spirits_config.wsgi.application'
 
+if os.environ.get("VERCEL"):
+    _db_path = Path("/tmp/db.sqlite3")
+
+    if not _db_path.exists():
+        shutil.copy(BASE_DIR / "db.sqlite3", _db_path)
+
+    DB_PATH = _db_path
+else:
+    DB_PATH = BASE_DIR / "db.sqlite3"
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": DB_PATH,
     }
 }
+
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https" )
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://aura-spirits.vercel.app",
+    "https://*.vercel.app",
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
